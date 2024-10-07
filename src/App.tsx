@@ -1,10 +1,20 @@
-import { X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
+import { Minus, Plus, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Item {
   id: string;
   content: string;
+  category: 'Action' | 'Drama' | 'Comedy';
 }
 
 const STORAGE_KEY = 'dragDropItems';
@@ -14,32 +24,54 @@ const DragAndDrop: React.FC = () => {
     {
       id: 'item1',
       content:
-        '1. "I\'m going to make him an offer he can\'t refuse" - The Godfather'
+        '"I\'m going to make him an offer he can\'t refuse" - The Godfather',
+      category: 'Drama'
     },
     {
       id: 'item2',
-      content: '2. "The name\'s Bond. James Bond." - Various James Bond films'
+      content: '"The name\'s Bond. James Bond." - James Bond films',
+      category: 'Action'
     },
     {
       id: 'item3',
-      content: '3. "Shaken, not stirred" - Various James Bond films'
+      content: '"Shaken, not stirred" - Various James Bond films',
+      category: 'Action'
     },
-    { id: 'item4', content: '4. "May the Force be with you" - Star Wars' },
+    {
+      id: 'item4',
+      content: '"May the Force be with you" - Star Wars',
+      category: 'Action'
+    },
     {
       id: 'item5',
-      content: '5. "You can\'t handle the truth!" - A Few Good Men'
+      content: '"You can\'t handle the truth!" - A Few Good Men',
+      category: 'Drama'
     },
-    { id: 'item6', content: '6. "I\'ll be back" - The Terminator' },
-    { id: 'item7', content: '7. "I see dead people" - The Sixth Sense' },
+    {
+      id: 'item6',
+      content: '"I\'ll be back" - The Terminator',
+      category: 'Action'
+    },
+    {
+      id: 'item7',
+      content: '"I see dead people" - The Sixth Sense',
+      category: 'Drama'
+    },
     {
       id: 'item8',
-      content: '8. "Bean. Mr. Bean" - Bean: The Ultimate Disaster Movie'
+      content: '"Bean. Mr. Bean" - Bean: The Ultimate Disaster Movie',
+      category: 'Comedy'
     },
-    { id: 'item9', content: '9. "Not quite my tempo" - Whiplash' },
+    {
+      id: 'item9',
+      content: '"Not quite my tempo" - Whiplash',
+      category: 'Drama'
+    },
     {
       id: 'item10',
       content:
-        '10. "Maybe that\'s what hell is: the entire rest of eternity spent in Bruges" - In Bruges'
+        '"Maybe that\'s what hell is: the entire rest of eternity spent in Bruges" - In Bruges',
+      category: 'Comedy'
     }
   ]);
 
@@ -53,6 +85,9 @@ const DragAndDrop: React.FC = () => {
       return [];
     }
   });
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(['Action', 'Drama', 'Comedy'])
+  );
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(droppedItems));
@@ -129,66 +164,129 @@ const DragAndDrop: React.FC = () => {
     setDroppedItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
+  const toggleCategory = (category: string) => {
+    setExpandedCategories((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(category)) {
+        newSet.delete(category);
+      } else {
+        newSet.add(category);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className='p-6 bg-gray-100 min-h-screen'>
-      <h2 className='text-3xl font-bold mb-8 text-center text-gray-800'>
-        Native Drag and Drop
-      </h2>
+      <Card className='mb-8'>
+        <CardHeader>
+          <CardTitle className='text-3xl font-bold text-center text-gray-800'>
+            Native Drag and Drop
+          </CardTitle>
+        </CardHeader>
+      </Card>
       <div className='flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-8'>
-        <div className='w-full md:w-1/2'>
-          <h3 className='text-xl font-semibold mb-4 text-gray-700'>
-            Draggable Items
-          </h3>
-          <div className='space-y-3'>
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className='p-4 bg-white shadow-md rounded-lg cursor-move hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1'
-                draggable
-                onDragStart={(e) => onDragStart(e, item.id)}
-              >
-                {item.content}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className='w-full md:w-1/2'>
-          <h3 className='text-xl font-semibold mb-4 text-gray-700'>
-            Drop Zone
-          </h3>
-          <div
-            id='drop-zone'
-            className={`p-6 min-h-[16rem] bg-blue-50 border-2 border-dashed rounded-lg flex flex-col items-center  transition-all duration-300 ${
-              isDraggingOver ? 'border-blue-500 bg-blue-100' : 'border-blue-300'
-            }`}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onDragLeave={onDragLeave}
-          >
-            {droppedItems.length === 0 ? (
-              <p className='text-blue-500 text-lg my-auto'>Drop items here</p>
-            ) : (
-              <div className='space-y-3 w-full'>
-                {droppedItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className='p-3 bg-white shadow-sm border border-blue-200 rounded-md flex justify-between items-center dropped-item hover:shadow-md transition-all duration-300'
-                    draggable
-                    onDragStart={(e) => onDragStart(e, item.id)}
+        <Card className='w-full md:w-1/2'>
+          <CardHeader>
+            <CardTitle className='text-xl font-semibold text-gray-700'>
+              Draggable Movie Quotes
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className='h-[70vh]'>
+              {['Action', 'Drama', 'Comedy'].map((category) => (
+                <div key={category} className='mb-4 '>
+                  <Button
+                    variant='outline'
+                    className='w-full justify-between mb-2 bg-black text-white hover:bg-gray-700 hover:text-white'
+                    onClick={() => toggleCategory(category)}
                   >
-                    <span className='text-gray-700'>{item.content}</span>
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      className='text-red-500 hover:text-red-700 focus:outline-none transition-colors duration-300'
-                    >
-                      <X size={18} />
-                    </button>
+                    {category}
+                    {expandedCategories.has(category) ? (
+                      <Minus size={16} />
+                    ) : (
+                      <Plus size={16} />
+                    )}
+                  </Button>
+                  {expandedCategories.has(category) && (
+                    <div className='space-y-3 pl-4'>
+                      {items
+                        .filter((item) => item.category === category)
+                        .map((item) => (
+                          <TooltipProvider key={item.id}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div
+                                  className='p-4 bg-white shadow-sm rounded-lg cursor-move hover:shadow-md transition-all duration-300'
+                                  draggable
+                                  onDragStart={(e) => onDragStart(e, item.id)}
+                                >
+                                  {item.content.substring(0, 85)}{' '}
+                                  {item.content.length > 85 ? '...' : ''}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{item.content}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+        <Card className='w-full md:w-1/2'>
+          <CardHeader>
+            <CardTitle className='text-xl font-semibold text-gray-700'>
+              Drop Zone
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div
+              id='drop-zone'
+              className={`p-6 h-[70vh] bg-blue-50 border-2 border-dashed rounded-lg flex flex-col items-center transition-all duration-300 ${
+                isDraggingOver
+                  ? 'border-blue-500 bg-blue-100'
+                  : 'border-blue-300'
+              }`}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onDragLeave={onDragLeave}
+            >
+              <ScrollArea className='w-full h-full'>
+                {droppedItems.length === 0 ? (
+                  <p className='text-blue-500 text-lg text-center my-auto'>
+                    Drop items here
+                  </p>
+                ) : (
+                  <div className='space-y-3 w-full'>
+                    {droppedItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className='p-3 bg-white shadow-sm border border-blue-200 rounded-md flex justify-between items-center dropped-item hover:shadow-md transition-all duration-300'
+                        draggable
+                        onDragStart={(e) => onDragStart(e, item.id)}
+                      >
+                        <span className='text-gray-700'>{item.content}</span>
+                        <Button
+                          variant='ghost'
+                          size='icon'
+                          onClick={() => removeItem(item.id)}
+                          className='text-red-500 hover:text-red-700 focus:outline-none'
+                        >
+                          <X size={18} />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+                )}
+              </ScrollArea>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
