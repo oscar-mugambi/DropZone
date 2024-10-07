@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Tooltip,
-  TooltipContent,
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip';
+import autoAnimate from '@formkit/auto-animate';
 import { Minus, Plus, X } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Item {
@@ -20,6 +20,14 @@ interface Item {
 const STORAGE_KEY = 'dragDropItems';
 
 const DragAndDrop: React.FC = () => {
+  const parent = useRef(null);
+
+  useEffect(() => {
+    if (parent.current) {
+      autoAnimate(parent.current);
+    }
+  }, [parent]);
+
   const [items] = useState<Item[]>([
     {
       id: 'item1',
@@ -225,9 +233,6 @@ const DragAndDrop: React.FC = () => {
                                   {item.content.length > 85 ? '...' : ''}
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{item.content}</p>
-                              </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         ))}
@@ -239,11 +244,8 @@ const DragAndDrop: React.FC = () => {
           </CardContent>
         </Card>
         <Card className='w-full md:w-1/2'>
-          <CardHeader>
-            <CardTitle className='text-xl font-semibold text-gray-700'>
-              Drop Zone
-            </CardTitle>
-          </CardHeader>
+          <CardHeader></CardHeader>
+
           <CardContent>
             <div
               id='drop-zone'
@@ -256,13 +258,13 @@ const DragAndDrop: React.FC = () => {
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
             >
-              <ScrollArea className='w-full h-full'>
+              <ScrollArea className='w-full h-full '>
                 {droppedItems.length === 0 ? (
-                  <p className='text-blue-500 text-lg text-center my-auto'>
+                  <p className='text-blue-500 text-lg text-center my-auto  h-full flex items-center justify-center'>
                     Drop items here
                   </p>
                 ) : (
-                  <div className='space-y-3 w-full'>
+                  <div className='space-y-3 w-full' ref={parent}>
                     {droppedItems.map((item) => (
                       <div
                         key={item.id}
