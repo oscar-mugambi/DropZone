@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.drop-zone-active {
+  border-color: #4f46e5; /* Example: Change border color */
+  background-color: #e0e7ff; /* Example: Change background */
+}
