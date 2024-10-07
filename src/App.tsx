@@ -29,12 +29,12 @@ const DragAndDrop: React.FC = () => {
     },
     {
       id: 'item2',
-      content: '"The name\'s Bond. James Bond." - James Bond films',
+      content: '"The name\'s Bond. James Bond." - James Bond',
       category: 'Action'
     },
     {
       id: 'item3',
-      content: '"Shaken, not stirred" - Various James Bond films',
+      content: '"I feel the need... the need for speed!" - Top Gun',
       category: 'Action'
     },
     {
