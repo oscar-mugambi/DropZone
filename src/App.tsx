@@ -11,12 +11,36 @@ const STORAGE_KEY = 'dragDropItems';
 
 const DragAndDrop: React.FC = () => {
   const [items] = useState<Item[]>([
-    { id: 'item1', content: 'Item 1' },
-    { id: 'item2', content: 'Item 2' },
-    { id: 'item3', content: 'Item 3' },
-    { id: 'item4', content: 'Item 4' },
-    { id: 'item5', content: 'Item 5' },
-    { id: 'item6', content: 'Item 6' }
+    {
+      id: 'item1',
+      content:
+        '1. "I\'m going to make him an offer he can\'t refuse" - The Godfather'
+    },
+    {
+      id: 'item2',
+      content: '2. "The name\'s Bond. James Bond." - Various James Bond films'
+    },
+    {
+      id: 'item3',
+      content: '3. "Shaken, not stirred" - Various James Bond films'
+    },
+    { id: 'item4', content: '4. "May the Force be with you" - Star Wars' },
+    {
+      id: 'item5',
+      content: '5. "You can\'t handle the truth!" - A Few Good Men'
+    },
+    { id: 'item6', content: '6. "I\'ll be back" - The Terminator' },
+    { id: 'item7', content: '7. "I see dead people" - The Sixth Sense' },
+    {
+      id: 'item8',
+      content: '8. "Bean. Mr. Bean" - Bean: The Ultimate Disaster Movie'
+    },
+    { id: 'item9', content: '9. "Not quite my tempo" - Whiplash' },
+    {
+      id: 'item10',
+      content:
+        '10. "Maybe that\'s what hell is: the entire rest of eternity spent in Bruges" - In Bruges'
+    }
   ]);
 
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -134,7 +158,7 @@ const DragAndDrop: React.FC = () => {
           </h3>
           <div
             id='drop-zone'
-            className={`p-6 min-h-[16rem] bg-blue-50 border-2 border-dashed rounded-lg flex flex-col items-center justify-center transition-all duration-300 ${
+            className={`p-6 min-h-[16rem] bg-blue-50 border-2 border-dashed rounded-lg flex flex-col items-center  transition-all duration-300 ${
               isDraggingOver ? 'border-blue-500 bg-blue-100' : 'border-blue-300'
             }`}
             onDrop={onDrop}
@@ -142,7 +166,7 @@ const DragAndDrop: React.FC = () => {
             onDragLeave={onDragLeave}
           >
             {droppedItems.length === 0 ? (
-              <p className='text-blue-500 text-lg'>Drop items here</p>
+              <p className='text-blue-500 text-lg my-auto'>Drop items here</p>
             ) : (
               <div className='space-y-3 w-full'>
                 {droppedItems.map((item) => (
